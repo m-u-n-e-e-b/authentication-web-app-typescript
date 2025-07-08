@@ -28,3 +28,4 @@ export const protect = async ( req: AuthenticatedRequest, res: Response, next: N
     res.status(401).json({ message: "Invalid token" });
   }
 };
+

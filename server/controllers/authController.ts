@@ -1,23 +1,32 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
-import { AuthenticatedRequest } from "../middleware/authMiddleware";
+import User, { IUser } from "../models/User";
+
+
+interface AuthenticatedRequest extends Request {
+  user?: IUser; 
+}
+
 
 
 //=================================================Register=================================
-export const register = async (req: Request, res: Response): Promise<void> => {
+export const register = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const { username, name, email, password, confirmpassword } = req.body;
 
-  if (!email || !password || !username || !name || !confirmpassword) {
-    res.status(400).json({ message: "All fields are required" });
-    return;
+  if (!email) {
+    res.status(400).json({ message: "Email is Required" });
+  }
+  if (!password) {
+    res.status(400).json({ message: "Password is required" });
+  }
+  if (!username) {
+    res.status(400).json({ message: "Username is required" });
+  }
+  if (!name) {
+    res.status(400).json({ message: "Name is required" });
   }
 
-  if (password !== confirmpassword) {
-    res.status(400).json({ message: "Passwords do not match" });
-    return;
-  }
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -38,7 +47,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
 //=================================================Login=================================
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -87,6 +96,7 @@ export const updateUser = async (req: AuthenticatedRequest, res: Response): Prom
     ).select("-password");
 
     res.status(200).json({ message: "User updated", user: updatedUser });
+
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
