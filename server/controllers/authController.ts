@@ -12,26 +12,25 @@ interface AuthenticatedRequest extends Request {
 
 //=================================================Register=================================
 export const register = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  const { username, name, email, password, confirmpassword } = req.body;
+  const { username, name, email, password} = req.body;
 
   if (!email) {
-    res.status(400).json({ message: "Email is Required" });
+    res.status(404).json({ message: "Email is Required" });
   }
   if (!password) {
-    res.status(400).json({ message: "Password is required" });
+    res.status(404).json({ message: "Password is required" });
   }
   if (!username) {
-    res.status(400).json({ message: "Username is required" });
+    res.status(404).json({ message: "Username is required" });
   }
   if (!name) {
-    res.status(400).json({ message: "Name is required" });
+    res.status(404).json({ message: "Name is required" });
   }
 
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     res.status(400).json({ message: "Email already in use" });
-    return;
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
