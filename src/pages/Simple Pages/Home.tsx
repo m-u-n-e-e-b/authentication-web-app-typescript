@@ -11,6 +11,7 @@ export function Home() {
 
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
+    const API = "http://localhost:5000/api/auth";
 
     const [showConfirmPopup, setShowConfirmPopup] = useState<boolean>(false);
     const [showUpdatePopup, setShowUpdatePopup] = useState<boolean>(false);
@@ -24,7 +25,7 @@ export function Home() {
     });
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/auth/me", {
+        fetch(`${API}/me`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -61,7 +62,7 @@ export function Home() {
 
     function handleConfirmDelete() {
 
-        fetch("http://localhost:5000/api/auth/delete", {
+        fetch(`${API}/delete`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -99,7 +100,7 @@ export function Home() {
 
             setShowError(false);
 
-            fetch("http://localhost:5000/api/auth/update", {
+            fetch(`${API}/update`, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${token}`,
